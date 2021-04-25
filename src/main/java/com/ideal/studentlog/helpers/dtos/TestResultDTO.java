@@ -1,25 +1,24 @@
 package com.ideal.studentlog.helpers.dtos;
 
-import com.ideal.studentlog.database.models.Student;
-import com.ideal.studentlog.database.models.Test;
+import com.ideal.studentlog.helpers.validators.annotations.ValidStudentId;
+import com.ideal.studentlog.helpers.validators.annotations.ValidTestId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
-import javax.persistence.OneToOne;
-import java.util.Date;
-
 @Data
 @AllArgsConstructor
 public class TestResultDTO {
-    @NonNull
-    @OneToOne
-    Test test;
 
     @NonNull
-    @OneToOne
-    Student student;
+    @ValidTestId
+    Integer testId;
+
+    @NonNull
+    @ValidStudentId
+    Integer studentId;
 
     @NonNull
     String grade;
+
 }

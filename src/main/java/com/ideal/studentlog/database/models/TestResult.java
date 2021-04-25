@@ -5,24 +5,25 @@ import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
-@Entity
+@Entity(name = "test_results")
 public class TestResult {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
     @NonNull
-    @OneToOne
+    @ManyToOne
     Test test;
 
     @NonNull
-    @OneToOne
+    @ManyToOne
     Student student;
 
     @NonNull
     String grade;
+
 }

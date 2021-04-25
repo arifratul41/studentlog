@@ -1,7 +1,7 @@
 package com.ideal.studentlog.helpers.dtos;
 
-import lombok.Data;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NonNull;
 
 import java.util.Date;
@@ -9,6 +9,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 public class TestDTO {
+
     @NonNull
     String subject;
 
@@ -16,5 +17,6 @@ public class TestDTO {
     String examiner;
 
     @NonNull
-    Date test_date;
+    Date date;
+
 }

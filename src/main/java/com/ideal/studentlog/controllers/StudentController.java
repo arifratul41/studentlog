@@ -1,6 +1,5 @@
 package com.ideal.studentlog.controllers;
 
-import com.ideal.studentlog.database.models.Student;
 import com.ideal.studentlog.helpers.dtos.StudentDTO;
 import com.ideal.studentlog.helpers.exceptions.ServiceException;
 import com.ideal.studentlog.services.StudentService;
@@ -19,7 +18,7 @@ public class StudentController {
     private final StudentService service;
 
     @GetMapping
-    public List<Student> getAll() {
+    public List<StudentDTO> getAll() {
         return service.getAll();
     }
 

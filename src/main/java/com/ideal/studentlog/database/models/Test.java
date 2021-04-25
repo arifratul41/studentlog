@@ -12,8 +12,9 @@ import java.util.Date;
 
 @Data
 @NoArgsConstructor
-@Entity
+@Entity(name = "tests")
 public class Test {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
@@ -25,5 +26,6 @@ public class Test {
     String examiner;
 
     @NonNull
-    Date test_date;
+    Date date;
+
 }
