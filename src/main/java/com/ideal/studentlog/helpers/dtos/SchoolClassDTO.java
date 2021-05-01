@@ -4,20 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
-import java.util.Date;
+import javax.validation.constraints.Size;
+
 @Data
 @AllArgsConstructor
-public class AttendanceDTO {
+public class SchoolClassDTO {
+    @NonNull
+    @Size(min = 1, max = 20)
+    String name;
 
     @NonNull
-    String studentId;
-
-    @NonNull
-    String teacherId;
-
-    @NonNull
-    Date date;
-
-    @NonNull
-    Boolean isPresent;
+    Integer grade;
 }

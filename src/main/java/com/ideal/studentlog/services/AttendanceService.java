@@ -1,56 +1,95 @@
 package com.ideal.studentlog.services;
 
-import com.ideal.studentlog.database.models.Attendance;
-import com.ideal.studentlog.database.repositories.AttendanceRepository;
-import com.ideal.studentlog.helpers.dtos.AttendanceDTO;
+import com.ideal.studentlog.helpers.mappers.AttendanceMapper;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import com.ideal.studentlog.database.models.Student;
+import com.ideal.studentlog.database.models.Teacher;
+import com.ideal.studentlog.database.models.Attendance;
+import com.ideal.studentlog.helpers.dataclass.AttendanceDTO;
+import com.ideal.studentlog.helpers.exceptions.ServiceException;
+import com.ideal.studentlog.database.repositories.StudentRepository;
+import com.ideal.studentlog.database.repositories.TeacherRepository;
+import com.ideal.studentlog.database.repositories.AttendanceRepository;
+
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AttendanceService {
+    private static final AttendanceMapper mapper = AttendanceMapper.INSTANCE;
+
     private final AttendanceRepository repository;
+    private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
 
-    public List<Attendance> getAll() {
-        return repository.findAll();
+
+
+    public List<AttendanceDTO> getAll() {
+        return repository
+                .findAll()
+                .stream()
+                .map(mapper::attendanceToAttendanceDto)
+                .collect(Collectors.toList());
     }
 
-    public void create(AttendanceDTO dto) {
+    public AttendanceDTO getById(Integer id) throws ServiceException {
+        return mapper.attendanceToAttendanceDto(getAttendance(id));
+    }
+
+    @Transactional
+    public AttendanceDTO create(AttendanceDTO dto) throws ServiceException {
         Attendance attendance = new Attendance();
-        attendance.setStudentId(dto.getStudentId());
-        attendance.setTeacherId(dto.getTeacherId());
-        attendance.setDate(dto.getDate());
-        attendance.setIsPresent(dto.getIsPresent());
-     
-        repository.save(attendance);
+
+        mapper.attendanceDtoToAttendance(dto, attendance);
+        attendance.setStudent(getStudent(dto.getStudentId()));
+        attendance.setTeacher(getTeacher(dto.getTeacherId()));
+
+        return mapper.attendanceToAttendanceDto(repository.save(attendance));
     }
 
-    public AttendanceDTO getById(Integer id) {
-        Attendance attendance = repository.findById(id).orElseThrow();
+    @Transactional
+    public AttendanceDTO update(Integer id, AttendanceDTO dto) throws ServiceException {
+        Attendance attendance = getAttendance(id);
 
-        return new AttendanceDTO(
-                attendance.getStudentId(),
-                attendance.getTeacherId(),
-                attendance.getDate(),
-                attendance.getIsPresent()
-        );
+        mapper.attendanceDtoToAttendance(dto, attendance);
+        attendance.setStudent(getStudent(dto.getStudentId()));
+        attendance.setTeacher(getTeacher(dto.getTeacherId()));
+
+        return mapper.attendanceToAttendanceDto(repository.save(attendance));
     }
 
-    public void update(Integer id, AttendanceDTO dto) {
-        Attendance attendance = repository.findById(id).orElseThrow();
-        attendance.setStudentId(dto.getStudentId());
-        attendance.setTeacherId(dto.getTeacherId());
-        attendance.setDate(dto.getDate());
-        attendance.setIsPresent(dto.getIsPresent());
-        
-        repository.save(attendance);
-    }
-
+    @Transactional
     public void delete(Integer id) {
         repository.deleteById(id);
     }
 
+    private Attendance getAttendance(Integer id) throws ServiceException {
+        return repository.findById(id).orElseThrow(() -> new ServiceException(
+                "Attendance not found with ID: " + id,
+                HttpStatus.NOT_FOUND
+        ));
+    }
+
+    private Student getStudent(@NonNull Integer id) throws ServiceException {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new ServiceException(
+                        "Student not found with ID: " + id,
+                        HttpStatus.NOT_FOUND
+                ));
+    }
+
+    private Teacher getTeacher(@NonNull Integer id) throws ServiceException {
+        return teacherRepository.findById(id)
+                .orElseThrow(() -> new ServiceException(
+                        "Student not found with ID: " + id,
+                        HttpStatus.NOT_FOUND
+                ));
+    }
 }
 

@@ -1,24 +1,19 @@
 package com.ideal.studentlog.helpers.dtos;
 
 import com.ideal.studentlog.helpers.validators.annotations.ValidStudentId;
-import com.ideal.studentlog.helpers.validators.annotations.ValidTestId;
+import com.ideal.studentlog.helpers.validators.annotations.ValidClassDetailsId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
 @Data
 @AllArgsConstructor
-public class TestResultDTO {
-
+public class ClassStudentDTO {
     @NonNull
-    @ValidTestId
-    Integer testId;
+    @ValidClassDetailsId
+    Integer classDetailsId;
 
     @NonNull
     @ValidStudentId
     Integer studentId;
-
-    @NonNull
-    String grade;
-
 }
